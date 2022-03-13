@@ -17,6 +17,7 @@ dependencies {
     commonMainImplementation(libs.mokoMvvmState)
     commonMainImplementation(libs.mokoResources)
     commonMainImplementation(libs.mokoUnits)
+    commonMainImplementation(libs.mokoPaging)
 
     commonMainImplementation(libs.napier)
 }

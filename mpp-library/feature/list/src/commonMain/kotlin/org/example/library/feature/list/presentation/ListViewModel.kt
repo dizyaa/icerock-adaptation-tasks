@@ -4,20 +4,18 @@
 
 package org.example.library.feature.list.presentation
 
-import io.github.aakira.napier.Napier
 import dev.icerock.moko.mvvm.ResourceState
-import dev.icerock.moko.mvvm.asState
 import dev.icerock.moko.mvvm.livedata.LiveData
-import dev.icerock.moko.mvvm.livedata.MutableLiveData
 import dev.icerock.moko.mvvm.livedata.dataTransform
 import dev.icerock.moko.mvvm.livedata.errorTransform
 import dev.icerock.moko.mvvm.livedata.map
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
+import dev.icerock.moko.paging.LambdaPagedListDataSource
+import dev.icerock.moko.paging.Pagination
 import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.desc.StringDesc
 import dev.icerock.moko.resources.desc.desc
 import dev.icerock.moko.units.TableUnitItem
-import kotlinx.coroutines.launch
 import org.example.library.feature.list.model.ListSource
 
 class ListViewModel<T>(
@@ -26,10 +24,23 @@ class ListViewModel<T>(
     private val unitsFactory: UnitsFactory<T>
 ) : ViewModel() {
 
-    private val _state: MutableLiveData<ResourceState<List<T>, Throwable>> =
-        MutableLiveData(initialValue = ResourceState.Empty())
+    private val pagination: Pagination<T> = Pagination(
+        parentScope = viewModelScope,
+        dataSource = LambdaPagedListDataSource {
+            val list = listSource.getList(
+                page = it?.size?.div(20) ?: 1
+            )
+            it?.plus(list) ?: listSource.getList()
+        },
+        comparator = { a, b ->
+            a.hashCode() - b.hashCode()
+        },
+        nextPageListener = { },
+        refreshListener = { },
+        initValue = emptyList()
+    )
 
-    val state: LiveData<ResourceState<List<TableUnitItem>, StringDesc>> = _state
+    val state: LiveData<ResourceState<List<TableUnitItem>, StringDesc>> = pagination.state
         .dataTransform {
             map { news ->
                 news.map { unitsFactory.createTile(it) }
@@ -49,33 +60,12 @@ class ListViewModel<T>(
     }
 
     fun onRefresh(completion: () -> Unit) {
-        viewModelScope.launch {
-            @Suppress("TooGenericExceptionCaught") // ktor on ios fail with Throwable when no network
-            try {
-                val items = listSource.getList()
-
-                _state.value = items.asState()
-            } catch (error: Exception) {
-                Napier.e("can't refresh", throwable = error)
-            } finally {
-                completion()
-            }
-        }
+        pagination.refresh()
+        completion()
     }
 
     private fun loadList() {
-        _state.value = ResourceState.Loading()
-
-        viewModelScope.launch {
-            @Suppress("TooGenericExceptionCaught") // ktor on ios fail with Throwable when no network
-            try {
-                val items = listSource.getList()
-
-                _state.value = items.asState()
-            } catch (error: Exception) {
-                _state.value = ResourceState.Failed(error)
-            }
-        }
+        pagination.loadFirstPage()
     }
 
     interface UnitsFactory<T> {

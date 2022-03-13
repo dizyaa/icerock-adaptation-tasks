@@ -25,6 +25,7 @@ dependencies {
     commonMainApi(libs.mokoMvvmState)
     commonMainApi(libs.mokoUnits)
     commonMainApi(libs.mokoFields)
+    commonMainApi(libs.mokoPaging)
 
     commonMainApi(projects.mppLibrary.domain)
     commonMainApi(projects.mppLibrary.feature.config)

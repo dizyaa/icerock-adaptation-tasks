@@ -51,8 +51,14 @@ class SharedFactory(
 
     val newsFactory: ListFactory<News> = ListFactory(
         listSource = object : ListSource<News> {
-            override suspend fun getList(): List<News> {
-                return domainFactory.newsRepository.getNewsList()
+            override suspend fun getList(
+                page: Int,
+                pageSize: Int,
+            ): List<News> {
+                return domainFactory.newsRepository.getNewsList(
+                    page = page,
+                    pageSize = pageSize
+                )
             }
         },
         strings = object : ListViewModel.Strings {
