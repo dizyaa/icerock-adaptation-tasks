@@ -10,6 +10,8 @@ import dev.icerock.moko.mvvm.livedata.dataTransform
 import dev.icerock.moko.mvvm.livedata.errorTransform
 import dev.icerock.moko.mvvm.livedata.map
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
+import dev.icerock.moko.paging.IdComparator
+import dev.icerock.moko.paging.IdEntity
 import dev.icerock.moko.paging.LambdaPagedListDataSource
 import dev.icerock.moko.paging.Pagination
 import dev.icerock.moko.resources.StringResource
@@ -21,20 +23,32 @@ import org.example.library.feature.list.model.ListSource
 class ListViewModel<T>(
     private val listSource: ListSource<T>,
     private val strings: Strings,
-    private val unitsFactory: UnitsFactory<T>
+    private val unitsFactory: UnitsFactory<T>,
+    private val pageSize: Int = 20,
 ) : ViewModel() {
 
-    private val pagination: Pagination<T> = Pagination(
+    private val pagination: Pagination<Tile<T>> = Pagination(
         parentScope = viewModelScope,
-        dataSource = LambdaPagedListDataSource {
-            val list = listSource.getList(
-                page = it?.size?.div(20) ?: 1
-            )
-            it?.plus(list) ?: listSource.getList()
+        dataSource = LambdaPagedListDataSource { tiles ->
+            val tileList: List<T> = if (tiles == null) {
+                listSource.getList(1, pageSize)
+            } else {
+                listSource.getList(
+                    page = (tiles.size / pageSize) + 1,
+                    pageSize = pageSize
+                )
+            }
+
+            val newTiles = tileList.mapIndexed { index, it ->
+                Tile(
+                    id = tiles?.size?.toLong()?.plus(index) ?: 0L,
+                    data = it
+                )
+            }
+
+            newTiles.plus(tiles ?: emptyList())
         },
-        comparator = { a, b ->
-            a.hashCode() - b.hashCode()
-        },
+        comparator = IdComparator(),
         nextPageListener = { },
         refreshListener = { },
         initValue = emptyList()
@@ -43,7 +57,7 @@ class ListViewModel<T>(
     val state: LiveData<ResourceState<List<TableUnitItem>, StringDesc>> = pagination.state
         .dataTransform {
             map { news ->
-                news.map { unitsFactory.createTile(it) }
+                news.map { unitsFactory.createTile(it.data) }
             }
         }
         .errorTransform {
@@ -52,11 +66,11 @@ class ListViewModel<T>(
         }
 
     fun onCreated() {
-        loadList()
+        pagination.loadFirstPage()
     }
 
     fun onRetryPressed() {
-        loadList()
+        pagination.loadFirstPage()
     }
 
     fun onRefresh(completion: () -> Unit) {
@@ -64,9 +78,14 @@ class ListViewModel<T>(
         completion()
     }
 
-    private fun loadList() {
-        pagination.loadFirstPage()
+    fun onLoadNextPage() {
+        pagination.loadNextPage()
     }
+
+    data class Tile<T>(
+        override val id: Long,
+        val data: T
+    ): IdEntity
 
     interface UnitsFactory<T> {
         fun createTile(data: T): TableUnitItem

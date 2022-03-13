@@ -5,5 +5,5 @@
 package org.example.library.feature.list.model
 
 interface ListSource<T> {
-    suspend fun getList(page: Int = 1, pageSize: Int = 20): List<T>
+    suspend fun getList(page: Int, pageSize: Int): List<T>
 }

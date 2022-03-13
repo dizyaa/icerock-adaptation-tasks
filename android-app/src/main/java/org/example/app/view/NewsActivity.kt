@@ -5,7 +5,9 @@
 package org.example.app.view
 
 import android.os.Bundle
+import android.view.View
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.RecyclerView
 import dagger.hilt.android.AndroidEntryPoint
 import dev.icerock.moko.mvvm.MvvmActivity
 import dev.icerock.moko.mvvm.createViewModelFactory
@@ -43,5 +45,21 @@ class NewsActivity : MvvmActivity<ActivityNewsBinding, ListViewModel<News>>() {
                 viewModel.onRefresh { isRefreshing = false }
             }
         }
+
+        binding.recyclerView.addOnChildAttachStateChangeListener(
+            object : RecyclerView.OnChildAttachStateChangeListener{
+                override fun onChildViewDetachedFromWindow(view: View) { }
+
+                override fun onChildViewAttachedToWindow(view: View) {
+                    val count = viewModel.state.value.dataValue()?.size ?: return
+                    val position = binding.recyclerView.getChildAdapterPosition(view)
+
+                    if (position == count - 1) {
+                        viewModel.onLoadNextPage()
+                    }
+                }
+
+            }
+        )
     }
 }
