@@ -38,6 +38,7 @@ dependencies {
     implementation(libs.recyclerView)
     implementation(libs.swipeRefreshLayout)
     implementation(libs.mokoMvvmDataBinding)
+    implementation(libs.mokoPermissions)
 
     // Hilt
     implementation(libs.hilt)

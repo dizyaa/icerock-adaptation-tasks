@@ -10,12 +10,18 @@ import dev.icerock.moko.fields.validate
 import dev.icerock.moko.mvvm.dispatcher.EventsDispatcher
 import dev.icerock.moko.mvvm.dispatcher.EventsDispatcherOwner
 import dev.icerock.moko.mvvm.viewmodel.ViewModel
+import dev.icerock.moko.permissions.DeniedAlwaysException
+import dev.icerock.moko.permissions.DeniedException
+import dev.icerock.moko.permissions.Permission
+import dev.icerock.moko.permissions.PermissionsController
 import dev.icerock.moko.resources.desc.StringDesc
+import kotlinx.coroutines.launch
 import org.example.library.feature.config.model.ConfigStore
 
 class ConfigViewModel(
     override val eventsDispatcher: EventsDispatcher<EventsListener>,
     private val configStore: ConfigStore,
+    val permissionsController: PermissionsController,
     validations: Validations,
     defaultToken: String,
     defaultLanguage: String
@@ -29,6 +35,30 @@ class ConfigViewModel(
     private val fields = listOf(apiTokenField, languageField)
 
     fun onSubmitPressed() {
+        checkPermissions()
+    }
+
+    private fun checkPermissions() {
+        viewModelScope.launch {
+            try {
+                listOf(
+                    Permission.GALLERY,
+                    Permission.LOCATION,
+                    Permission.STORAGE
+                ).forEach {
+                    permissionsController.providePermission(it)
+                }
+
+                checkValidateFields()
+            } catch(deniedAlways: DeniedAlwaysException) {
+                eventsDispatcher.dispatchEvent { showError("DeniedAlwaysException") }
+            } catch(denied: DeniedException) {
+                eventsDispatcher.dispatchEvent { showError("DeniedException") }
+            }
+        }
+    }
+
+    private fun checkValidateFields() {
         if (!fields.validate()) return
 
         configStore.apiToken = apiTokenField.value()
@@ -44,5 +74,6 @@ class ConfigViewModel(
 
     interface EventsListener {
         fun routeToNews()
+        fun showError(message: String)
     }
 }

@@ -19,6 +19,7 @@ dependencies {
     commonMainApi(libs.napier)
     commonMainApi(libs.mokoParcelize)
     commonMainApi(libs.mokoResources)
+    commonMainApi(libs.mokoPermissions)
     commonMainApi(libs.mokoMvvmCore)
     commonMainApi(libs.mokoMvvmLiveData)
     commonMainApi(libs.mokoMvvmState)

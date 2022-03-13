@@ -5,6 +5,7 @@
 package org.example.library.feature.config.di
 
 import dev.icerock.moko.mvvm.dispatcher.EventsDispatcher
+import dev.icerock.moko.permissions.PermissionsController
 import org.example.library.feature.config.model.ConfigStore
 import org.example.library.feature.config.presentation.ConfigViewModel
 
@@ -15,9 +16,11 @@ class ConfigFactory(
     private val defaultLanguage: String
 ) {
     fun createConfigViewModel(
-        eventsDispatcher: EventsDispatcher<ConfigViewModel.EventsListener>
+        eventsDispatcher: EventsDispatcher<ConfigViewModel.EventsListener>,
+        permissionsController: PermissionsController
     ) = ConfigViewModel(
         eventsDispatcher = eventsDispatcher,
+        permissionsController = permissionsController,
         configStore = configStore,
         validations = validations,
         defaultToken = defaultToken,

@@ -14,4 +14,5 @@ dependencies {
     commonMainImplementation(libs.mokoMvvmLiveData)
     commonMainImplementation(libs.mokoResources)
     commonMainImplementation(libs.mokoFields)
+    commonMainImplementation(libs.mokoPermissions)
 }
