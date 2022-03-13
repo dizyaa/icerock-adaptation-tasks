@@ -4,6 +4,7 @@
     <string name="no_description">No description</string>
     <string name="invalid_language_s">Language must be one of (%s)</string>
     <string name="invalid_token">Token can\'t be empty</string>
+    <string name="invalid_test_field">Invalid test field</string>
     <string name="denied_exception">Denied exception</string>
     <string name="denied_always_exception">Denied Always exception</string>
 </resources>

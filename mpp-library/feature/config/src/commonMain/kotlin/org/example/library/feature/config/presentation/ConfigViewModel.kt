@@ -34,8 +34,10 @@ class ConfigViewModel(
         FormField(configStore.apiToken ?: defaultToken, liveBlock(validations::validateToken))
     val languageField: FormField<String, StringDesc> =
         FormField(configStore.language ?: defaultLanguage, liveBlock(validations::validateLanguage))
+    val testField: FormField<String, StringDesc> =
+        FormField("", liveBlock(validations::validateTestField))
 
-    private val fields = listOf(apiTokenField, languageField)
+    private val fields = listOf(apiTokenField, languageField, testField)
 
     fun onSubmitPressed() {
         checkPermissions()
@@ -73,6 +75,7 @@ class ConfigViewModel(
     interface Validations {
         fun validateToken(value: String): StringDesc?
         fun validateLanguage(value: String): StringDesc?
+        fun validateTestField(value: String): StringDesc?
     }
 
     interface EventsListener {

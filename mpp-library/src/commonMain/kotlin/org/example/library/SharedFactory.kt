@@ -102,6 +102,14 @@ class SharedFactory(
                     )
                 }
             }
+
+            override fun validateTestField(value: String): StringDesc? {
+                return if (value.filter { it.isDigit() } == value) {
+                    null
+                } else {
+                    MR.strings.invalid_test_field.desc()
+                }
+            }
         },
         strings = object : ConfigViewModel.Strings {
             override val deniedException: StringResource
