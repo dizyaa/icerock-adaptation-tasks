@@ -14,17 +14,20 @@ import dev.icerock.moko.permissions.DeniedAlwaysException
 import dev.icerock.moko.permissions.DeniedException
 import dev.icerock.moko.permissions.Permission
 import dev.icerock.moko.permissions.PermissionsController
+import dev.icerock.moko.resources.StringResource
 import dev.icerock.moko.resources.desc.StringDesc
+import dev.icerock.moko.resources.desc.desc
 import kotlinx.coroutines.launch
 import org.example.library.feature.config.model.ConfigStore
 
 class ConfigViewModel(
     override val eventsDispatcher: EventsDispatcher<EventsListener>,
     private val configStore: ConfigStore,
+    private val strings: Strings,
     val permissionsController: PermissionsController,
     validations: Validations,
     defaultToken: String,
-    defaultLanguage: String
+    defaultLanguage: String,
 ) : ViewModel(), EventsDispatcherOwner<ConfigViewModel.EventsListener> {
 
     val apiTokenField: FormField<String, StringDesc> =
@@ -51,9 +54,9 @@ class ConfigViewModel(
 
                 checkValidateFields()
             } catch(deniedAlways: DeniedAlwaysException) {
-                eventsDispatcher.dispatchEvent { showError("DeniedAlwaysException") }
+                eventsDispatcher.dispatchEvent { showError(strings.deniedAlwaysException.desc()) }
             } catch(denied: DeniedException) {
-                eventsDispatcher.dispatchEvent { showError("DeniedException") }
+                eventsDispatcher.dispatchEvent { showError(strings.deniedException.desc()) }
             }
         }
     }
@@ -74,6 +77,11 @@ class ConfigViewModel(
 
     interface EventsListener {
         fun routeToNews()
-        fun showError(message: String)
+        fun showError(message: StringDesc)
+    }
+
+    interface Strings {
+        val deniedException: StringResource
+        val deniedAlwaysException: StringResource
     }
 }

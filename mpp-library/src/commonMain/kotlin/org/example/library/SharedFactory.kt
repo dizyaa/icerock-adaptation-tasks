@@ -103,6 +103,12 @@ class SharedFactory(
                 }
             }
         },
+        strings = object : ConfigViewModel.Strings {
+            override val deniedException: StringResource
+                get() = MR.strings.denied_exception
+            override val deniedAlwaysException: StringResource
+                get() = MR.strings.denied_always_exception
+        },
         defaultToken = "ed155d0a445e4b4fbd878fe1f3bc1b7f",
         defaultLanguage = "us"
     )

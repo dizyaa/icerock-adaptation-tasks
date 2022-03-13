@@ -9,6 +9,7 @@ import com.russhwolf.settings.Settings
 import dev.icerock.moko.mvvm.dispatcher.EventsDispatcher
 import dev.icerock.moko.mvvm.test.TestViewModelScopeRule
 import dev.icerock.moko.mvvm.test.createTestEventsDispatcher
+import dev.icerock.moko.permissions.PermissionsController
 import dev.icerock.moko.test.cases.InstantTaskRule
 import dev.icerock.moko.test.cases.TestCases
 import io.ktor.client.engine.mock.*

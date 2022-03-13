@@ -13,7 +13,8 @@ class ConfigFactory(
     private val configStore: ConfigStore,
     private val validations: ConfigViewModel.Validations,
     private val defaultToken: String,
-    private val defaultLanguage: String
+    private val defaultLanguage: String,
+    private val strings: ConfigViewModel.Strings,
 ) {
     fun createConfigViewModel(
         eventsDispatcher: EventsDispatcher<ConfigViewModel.EventsListener>,
@@ -24,6 +25,7 @@ class ConfigFactory(
         configStore = configStore,
         validations = validations,
         defaultToken = defaultToken,
-        defaultLanguage = defaultLanguage
+        defaultLanguage = defaultLanguage,
+        strings = strings
     )
 }

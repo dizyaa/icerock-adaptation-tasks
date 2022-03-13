@@ -13,6 +13,7 @@ import dev.icerock.moko.mvvm.MvvmEventsActivity
 import dev.icerock.moko.mvvm.createViewModelFactory
 import dev.icerock.moko.mvvm.dispatcher.eventsDispatcherOnMain
 import dev.icerock.moko.permissions.PermissionsController
+import dev.icerock.moko.resources.desc.StringDesc
 import javax.inject.Inject
 import org.example.app.BR
 import org.example.app.R
@@ -52,7 +53,11 @@ class ConfigActivity :
         Intent(this, NewsActivity::class.java).also { startActivity(it) }
     }
 
-    override fun showError(message: String) {
-        Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+    override fun showError(message: StringDesc) {
+        Toast.makeText(
+            applicationContext,
+            message.toString(applicationContext),
+            Toast.LENGTH_SHORT
+        ).show()
     }
 }
