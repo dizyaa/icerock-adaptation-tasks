@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="unknown_error">Неизвестная ошибка</string>
+	<string name="no_description">Описание отствует</string>
+	<string name="invalid_language_s">Неизвестный язык. (Доступно: %s)</string>
+	<string name="invalid_token">Токен не может быть пустым</string>
+	<string name="invalid_test_field">Неверное введённое поле</string>
+	<string name="denied_exception">Отсуствует разрешение</string>
+	<string name="denied_always_exception">Отсуствует разрешение, дайте в настройказ плз</string>
+</resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="no_data">Нет данных</string>
+	<string name="submit_btn">Подтвердить</string>
+	<string name="token_hint">API ключ</string>
+	<string name="language_hint">Код языка</string>
+	<string name="test_field_hint">Только цифры</string>
+	<string name="retry_btn">Повторить</string>
+	<string name="app_name">MokoTemplate</string>
+</resources>

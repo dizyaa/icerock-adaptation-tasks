@@ -1,0 +1,7 @@
+"no_data" = "Нет данных";
+"submit_btn" = "Подтвердить";
+"token_hint" = "API ключ";
+"language_hint" = "Код языка";
+"test_field_hint" = "Только цифры";
+"retry_btn" = "Повторить";
+"app_name" = "MokoTemplate";
